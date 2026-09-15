@@ -1,0 +1,58 @@
+# 📚 Guía de Instalación Rápida
+
+## ⚡ 3 Pasos para empezar
+
+### 1️⃣ DESCARGAR
+Descarga este repositorio como ZIP desde GitHub
+
+### 2️⃣ EXTRAER
+Extrae la carpeta `material-multimedia` en tu PC
+
+### 3️⃣ ABRIR
+Haz doble clic en `index.html` ¡Y listo!
+
+---
+
+## 🎯 Estructura
+
+```
+material-multimedia/
+├── index.html          ← ABRE ESTE ARCHIVO
+├── README.md           (Documentación)
+├── GUIA_RAPIDA.txt     (Este archivo)
+├── audios/             (10 audios MP3)
+├── videos/             (10 videos MP4)
+└── imagenes/           (20 imágenes JPG)
+```
+
+---
+
+## 📂 Agregar contenido
+
+### Audios 🎧
+- Copia archivos MP3 a la carpeta `audios/`
+- Nómbralos: `audio-1.mp3`, `audio-2.mp3`, etc.
+
+### Videos 🎥
+- Copia archivos MP4 a la carpeta `videos/`
+- Nómbralos: `video-1.mp4`, `video-2.mp4`, etc.
+
+### Imágenes 🖼️
+- Copia archivos JPG a la carpeta `imagenes/`
+- Nómbralos: `imagen-1.jpg`, `imagen-2.jpg`, etc.
+
+---
+
+## ✅ Lo que conseguirás
+
+✓ Audios con controles completos
+✓ Videos con controles completos  
+✓ Imágenes con zoom (clic para ampliar)
+✓ Interfaz bella y moderna
+✓ Compatible con todos los navegadores
+✓ Funciona sin internet
+✓ ¡Listo para usar en cualquier lugar!
+
+---
+
+**¡Disfruta tu contenido multimedia!** 🎉

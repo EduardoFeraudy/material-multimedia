@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Material Multimedia - Audios, Videos e Imágenes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #667eea;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #667eea;
+            border-radius: 50%;
+        }
+
+        /* AUDIOS */
+        .audios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .audio-item {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .audio-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .audio-item h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        audio {
+            width: 100%;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+
+        /* VIDEOS */
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .video-item {
+            background: #000;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s;
+        }
+
+        .video-item:hover {
+            transform: scale(1.02);
+        }
+
+        .video-item h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 1.1em;
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            background: #222;
+        }
+
+        /* IMÁGENES */
+        .images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .image-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            cursor: zoom-in;
+            background: #f0f0f0;
+            aspect-ratio: 1 / 1;
+        }
+
+        .image-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s, filter 0.3s;
+            display: block;
+        }
+
+        .image-item:hover img {
+            transform: scale(1.1);
+            filter: brightness(1.1);
+        }
+
+        /* MODAL PARA ZOOM */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            animation: zoomIn 0.3s;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            font-size: 2.5em;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: color 0.3s;
+            background: rgba(0, 0, 0, 0.5);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+        }
+
+        .modal-close:hover {
+            color: #667eea;
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-title {
+            color: white;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.3em;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        /* FOOTER */
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #ddd;
+        }
+
+        .footer p {
+            margin: 5px 0;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .section-title {
+                font-size: 1.4em;
+            }
+
+            .audios-grid, .videos-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .images-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+
+        .placeholder-img {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 3em;
+            font-weight: bold;
+        }
+
+        .placeholder-audio, .placeholder-video {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 2em;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 Material Multimedia Interactivo</h1>
+            <p>Audios, Videos e Imágenes con controles completos</p>
+        </div>
+
+        <div class="content">
+            <!-- SECCIÓN DE AUDIOS -->
+            <div class="section">
+                <h2 class="section-title">🎵 Audios (10)</h2>
+                <div class="audios-grid">
+                    <div class="audio-item">
+                        <h3>🎧 Audio 1 - Música Relajante</h3>
+                        <div class="placeholder-audio">🎵 Audio Archivo 1</div>
+                        <audio controls>
+                            <source src="audios/audio-1.mp3" type="audio/mpeg">
+                            Tu navegador no soporta audio.
+                        </audio>
+                    </div>
+                    <div class="audio-item">
+                        <h3>🎧 Audio 2 - Sonidos de la Naturaleza</h3>
+                        <div class="placeholder-audio">🎵 Audio Archivo 2</div>
+                        <audio controls>
+                            <source src="audios/audio-2.mp3" type="audio/mpeg">
+                            Tu navegador no soporta audio.
+                        </audio>
+                    </div>
+                    <div class="audio-item">
+                        <h3>🎧 Audio 3 - Música Electrónica</h3>
+                        <div class="placeholder-audio">🎵 Audio Archivo 3</div>
+                        <audio controls>
+                            <source src="audios/audio-3.mp3" type="audio/mpeg">
+                            Tu navegador no soporta audio.
+                        </audio>
+                    </div>
+                    <div class="audio-item">
+                        <h3>🎧 Audio 4 - Podcast</h3>
+                        <div class="placeholder-audio">🎵 Audio Archivo 4</div>
+                        <audio controls>
+                            <source src="audios/audio-4.mp3" type="audio/mpeg">
+                            Tu navegador no soporta audio.
+                        </audio>
+                    </div>
+                    <div class="audio-item">
+                        <h3>🎧 Audio 5 - Jazz</h3>
+                        <div class="placeholder-audio">🎵 Audio Archivo 5</div>
+                        <audio controls>
+                            <source src="audios/audio-5.mp3" type="audio/mpeg">
+                            Tu navegador no soporta audio.
+                        </audio>
+                    </div>
+                    <div class="audio-item">
+                        <h3>🎧 Audio 6 - Rock Clásico</h3>
+                        <div class="placeholder-audio">🎵 Audio Archivo 6</div>
+                        <audio controls>
+                            <source src="audios/audio-6.mp3" type="audio/mpeg">
+                            Tu navegador no soporta audio.
+                        </audio>
+                    </div>
+                    <div class="audio-item">
+                        <h3>🎧 Audio 7 - Música Ambiental</h3>
+                        <div class="placeholder-audio">🎵 Audio Archivo 7</div>
+                        <audio controls>
+                            <source src="audios/audio-7.mp3" type="audio/mpeg">
+                            Tu navegador no soporta audio.
+                        </audio>
+                    </div>
+                    <div class="audio-item">
+                        <h3>🎧 Audio 8 - Sonidos de Meditación</h3>
+                        <div class="placeholder-audio">🎵 Audio Archivo 8</div>
+                        <audio controls>
+                            <source src="audios/audio-8.mp3" type="audio/mpeg">
+                            Tu navegador no soporta audio.
+                        </audio>
+                    </div>
+                    <div class="audio-item">
+                        <h3>🎧 Audio 9 - Pop Moderno</h3>
+                        <div class="placeholder-audio">🎵 Audio Archivo 9</div>
+                        <audio controls>
+                            <source src="audios/audio-9.mp3" type="audio/mpeg">
+                            Tu navegador no soporta audio.
+                        </audio>
+                    </div>
+                    <div class="audio-item">
+                        <h3>🎧 Audio 10 - Instrumental</h3>
+                        <div class="placeholder-audio">🎵 Audio Archivo 10</div>
+                        <audio controls>
+                            <source src="audios/audio-10.mp3" type="audio/mpeg">
+                            Tu navegador no soporta audio.
+                        </audio>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN DE VIDEOS -->
+            <div class="section">
+                <h2 class="section-title">🎥 Videos (10)</h2>
+                <div class="videos-grid">
+                    <div class="video-item">
+                        <h3>📹 Video 1 - Naturaleza</h3>
+                        <video controls poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23333' width='400' height='300'/%3E%3Ctext x='50%' y='50%' fill='%23fff' font-size='30' text-anchor='middle' dy='.3em'%3E🎬 Video 1%3C/text%3E%3C/svg%3E">
+                            <source src="videos/video-1.mp4" type="video/mp4">
+                            Tu navegador no soporta video.
+                        </video>
+                    </div>
+                    <div class="video-item">
+                        <h3>📹 Video 2 - Paisajes</h3>
+                        <video controls poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23333' width='400' height='300'/%3E%3Ctext x='50%' y='50%' fill='%23fff' font-size='30' text-anchor='middle' dy='.3em'%3E🎬 Video 2%3C/text%3E%3C/svg%3E">
+                            <source src="videos/video-2.mp4" type="video/mp4">
+                            Tu navegador no soporta video.
+                        </video>
+                    </div>
+                    <div class="video-item">
+                        <h3>📹 Video 3 - Tutorial</h3>
+                        <video controls poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23333' width='400' height='300'/%3E%3Ctext x='50%' y='50%' fill='%23fff' font-size='30' text-anchor='middle' dy='.3em'%3E🎬 Video 3%3C/text%3E%3C/svg%3E">
+                            <source src="videos/video-3.mp4" type="video/mp4">
+                            Tu navegador no soporta video.
+                        </video>
+                    </div>
+                    <div class="video-item">
+                        <h3>📹 Video 4 - Animación</h3>
+                        <video controls poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23333' width='400' height='300'/%3E%3Ctext x='50%' y='50%' fill='%23fff' font-size='30' text-anchor='middle' dy='.3em'%3E🎬 Video 4%3C/text%3E%3C/svg%3E">
+                            <source src="videos/video-4.mp4" type="video/mp4">
+                            Tu navegador no soporta video.
+                        </video>
+                    </div>
+                    <div class="video-item">
+                        <h3>📹 Video 5 - Documental</h3>
+                        <video controls poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23333' width='400' height='300'/%3E%3Ctext x='50%' y='50%' fill='%23fff' font-size='30' text-anchor='middle' dy='.3em'%3E🎬 Video 5%3C/text%3E%3C/svg%3E">
+                            <source src="videos/video-5.mp4" type="video/mp4">
+                            Tu navegador no soporta video.
+                        </video>
+                    </div>
+                    <div class="video-item">
+                        <h3>📹 Video 6 - Aventura</h3>
+                        <video controls poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23333' width='400' height='300'/%3E%3Ctext x='50%' y='50%' fill='%23fff' font-size='30' text-anchor='middle' dy='.3em'%3E🎬 Video 6%3C/text%3E%3C/svg%3E">
+                            <source src="videos/video-6.mp4" type="video/mp4">
+                            Tu navegador no soporta video.
+                        </video>
+                    </div>
+                    <div class="video-item">
+                        <h3>📹 Video 7 - Educativo</h3>
+                        <video controls poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23333' width='400' height='300'/%3E%3Ctext x='50%' y='50%' fill='%23fff' font-size='30' text-anchor='middle' dy='.3em'%3E🎬 Video 7%3C/text%3E%3C/svg%3E">
+                            <source src="videos/video-7.mp4" type="video/mp4">
+                            Tu navegador no soporta video.
+                        </video>
+                    </div>
+                    <div class="video-item">
+                        <h3>📹 Video 8 - Ciencia</h3>
+                        <video controls poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23333' width='400' height='300'/%3E%3Ctext x='50%' y='50%' fill='%23fff' font-size='30' text-anchor='middle' dy='.3em'%3E🎬 Video 8%3C/text%3E%3C/svg%3E">
+                            <source src="videos/video-8.mp4" type="video/mp4">
+                            Tu navegador no soporta video.
+                        </video>
+                    </div>
+                    <div class="video-item">
+                        <h3>📹 Video 9 - Música</h3>
+                        <video controls poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23333' width='400' height='300'/%3E%3Ctext x='50%' y='50%' fill='%23fff' font-size='30' text-anchor='middle' dy='.3em'%3E🎬 Video 9%3C/text%3E%3C/svg%3E">
+                            <source src="videos/video-9.mp4" type="video/mp4">
+                            Tu navegador no soporta video.
+                        </video>
+                    </div>
+                    <div class="video-item">
+                        <h3>📹 Video 10 - Entretenimiento</h3>
+                        <video controls poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23333' width='400' height='300'/%3E%3Ctext x='50%' y='50%' fill='%23fff' font-size='30' text-anchor='middle' dy='.3em'%3E🎬 Video 10%3C/text%3E%3C/svg%3E">
+                            <source src="videos/video-10.mp4" type="video/mp4">
+                            Tu navegador no soporta video.
+                        </video>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN DE IMÁGENES -->
+            <div class="section">
+                <h2 class="section-title">🖼️ Imágenes (20) - Haz clic para ampliar</h2>
+                <div class="images-grid">
+                    <div class="image-item" onclick="openModal(this.querySelector('img'))">
+                        <div class="placeholder-img">IMG 1</div>
+                        <img src="imagenes/imagen-1.jpg" alt="Imagen 1" style="display:none;">
+                    </div>
+                    <div class="image-item" onclick="openModal(this.querySelector('img'))">
+                        <div class="placeholder-img">IMG 2</div>
+                        <img src="imagenes/imagen-2.jpg" alt="Imagen 2" style="display:none;">
+                    </div>
+                    <div class="image-item" onclick="openModal(this.querySelector('img'))">
+                        <div class="placeholder-img">IMG 3</div>
+                        <img src="imagenes/imagen-3.jpg" alt="Imagen 3" style="display:none;">
+                    </div>
+                    <div class="image-item" onclick="openModal(this.querySelector('img'))">
+                        <div class="placeholder-img">IMG 4</div>
+                        <img src="imagenes/imagen-4.jpg" alt="Imagen 4" style="display:none;">
+                    </div>
+                    <div class="image-item" onclick="openModal(this.querySelector('img'))">
+                        <div class="placeholder-img">IMG 5</div>
+                        <img src="imagenes/imagen-5.jpg" alt="Imagen 5" style="display:none;">
+                    </div>
+                    <div class="image-item" onclick="openModal(this.querySelector('img'))">
+                        <div class="placeholder-img">IMG 6</div>
+                        <img src="imagenes/imagen-6.jpg" alt="Imagen 6" style="display:none;">
+                    </div>
+                    <div class="image-item" onclick="openModal(this.querySelector('img'))">
+                        <div class="placeholder-img">IMG 7</div>
+                        <img src="imagenes/imagen-7.jpg" alt="Imagen 7" style="display:none;">
+                    </div>
+                    <div class="image-item" onclick="openModal(this.querySelector('img'))">
+                        <div class="placeholder-img">IMG 8</div>
+                        <img src="imagenes/imagen-8.jpg" alt="Imagen 8" style="display:none;">
+                    </div>
+                    <div class="image-item" onclick="openModal(this.querySelector('img'))">
+                        <div class="placeholder-img">IMG 9</div>
+                        <img src="imagenes/imagen-9.jpg" alt="Imagen 9" style="display:none;">
+                    </div>
+                    <div class="image-item" onclick="openModal(this.querySelector('img'))">
+                        <div class="placeholder-img">IMG 10</div>
+                        <img src="imagenes/imagen-10.jpg" alt="Imagen 10" style="display:none;">
+                    </div>
+                    <div class="image-item" onclick="openModal(this.querySelector('img'))">
+                        <div class="placeholder-img">IMG 11</div>
+                        <img src="imagenes/imagen-11.jpg" alt="Imagen 11" style="display:none;">
+                    </div>
+                    <div class="image-item" onclick="openModal(this.querySelector('img'))">
+                        <div class="placeholder-img">IMG 12</div>
+                        <img src="imagenes/imagen-12.jpg" alt="Imagen 12" style="display:none;">
+                    </div>
+                    <div class="image-item" onclick="openModal(this.querySelector('img'))">
+                        <div class="placeholder-img">IMG 13</div>
+                        <img src="imagenes/imagen-13.jpg" alt="Imagen 13" style="display:none;">
+                    </div>
+                    <div class="image-item" onclick="openModal(this.querySelector('img'))">
+                        <div class="placeholder-img">IMG 14</div>
+                        <img src="imagenes/imagen-14.jpg" alt="Imagen 14" style="display:none;">
+                    </div>
+                    <div class="image-item" onclick="openModal(this.querySelector('img'))">
+                        <div class="placeholder-img">IMG 15</div>
+                        <img src="imagenes/imagen-15.jpg" alt="Imagen 15" style="display:none;">
+                    </div>
+                    <div class="image-item" onclick="openModal(this.querySelector('img'))">
+                        <div class="placeholder-img">IMG 16</div>
+                        <img src="imagenes/imagen-16.jpg" alt="Imagen 16" style="display:none;">
+                    </div>
+                    <div class="image-item" onclick="openModal(this.querySelector('img'))">
+                        <div class="placeholder-img">IMG 17</div>
+                        <img src="imagenes/imagen-17.jpg" alt="Imagen 17" style="display:none;">
+                    </div>
+                    <div class="image-item" onclick="openModal(this.querySelector('img'))">
+                        <div class="placeholder-img">IMG 18</div>
+                        <img src="imagenes/imagen-18.jpg" alt="Imagen 18" style="display:none;">
+                    </div>
+                    <div class="image-item" onclick="openModal(this.querySelector('img'))">
+                        <div class="placeholder-img">IMG 19</div>
+                        <img src="imagenes/imagen-19.jpg" alt="Imagen 19" style="display:none;">
+                    </div>
+                    <div class="image-item" onclick="openModal(this.querySelector('img'))">
+                        <div class="placeholder-img">IMG 20</div>
+                        <img src="imagenes/imagen-20.jpg" alt="Imagen 20" style="display:none;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>📚 Material Multimedia Interactivo v1.0</strong></p>
+            <p>✅ Audios con controles | ✅ Videos con controles | ✅ Imágenes con zoom</p>
+            <p>💡 Copiar esta carpeta a cualquier parte y abrir index.html en el navegador</p>
+        </div>
+    </div>
+
+    <!-- MODAL PARA ZOOM DE IMÁGENES -->
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <img id="modalImage" src="" alt="">
+            <p class="modal-title" id="modalTitle"></p>
+        </div>
+    </div>
+
+    <script>
+        function openModal(imgElement) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalTitle = document.getElementById('modalTitle');
+            
+            modalImg.src = imgElement.src;
+            modalTitle.textContent = imgElement.alt;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Cerrar modal al hacer clic fuera de la imagen
+        document.getElementById('imageModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Cerrar modal con tecla ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Mostrar placeholders si las imágenes no existen
+        document.addEventListener('DOMContentLoaded', function() {
+            const imageItems = document.querySelectorAll('.image-item');
+            imageItems.forEach((item, index) => {
+                const img = item.querySelector('img');
+                const placeholder = item.querySelector('.placeholder-img');
+                
+                img.onerror = function() {
+                    // La imagen no existe, mostrar placeholder
+                    placeholder.style.display = 'flex';
+                };
+                
+                img.onload = function() {
+                    // La imagen cargó correctamente
+                    placeholder.style.display = 'none';
+                };
+            });
+        });
+    </script>
+</body>
+</html>
